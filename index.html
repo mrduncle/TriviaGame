@@ -20,16 +20,22 @@
 			</div>
 			<div id="response-correct"></div>
 			<div id="response-incorrect"></div>
-			<div id="question"></div>
+			<div id="response-timeout"></div>
+			<div id="question"></div><br>
 			<form id="answers">
-				<input type="radio" id="answer0" name="questions" value="" checked></input><br>
-				<input type="radio" id="answer1" name="questions" value=""></input><br>
-				<input type="radio" id="answer2" name="questions" value=""></input><br>
-				<input type="radio" id="answer3" name="questions" value=""></input><br><br>
-				<input type="submit" id="submit-answer" value="Submit">
+				<input type="radio" id="answer0" name="answer0" value=""></input>
+				<label for="answer0" id="label0"></label><br><br>
+				<input type="radio" id="answer1" name="answer1" value=""></input>
+				<label for="answer1" id="label1"></label><br><br>
+				<input type="radio" id="answer2" name="answer2" value=""></input>
+				<label for="answer2" id="label2"></label><br><br>
+				<input type="radio" id="answer3" name="answer3" value=""></input>
+				<label for="answer3" id="label3"></label><br><br>
+				<!-- <input type="submit" id="submit-answer" value="Submit"> -->
 			</form>
 			<div id="result"></div>
-			
+			<button id="again">Play Again</button>
+			<button id="quit">Quit Game</button>
 			
             <footer></footer>
 		</div>

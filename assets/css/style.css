@@ -7,10 +7,26 @@ body {
     /* opacity: 0.3; */
 }
 
-#questions {
-    position: absolute;
-    top: 140px;
+#answers {
+    position: relative;
+    /* top:200px; */
     left: 0px;
     /* color: black; */
     /* opacity: 1; */
+}
+
+input[type="radio" i] {
+    float: left;
+    display: none;
+    
+}
+
+#response-correct, #response-incorrect, #resonse-timeout {
+    white-space: pre-line;
+}
+
+button {
+    display: none;
+    float: left;
+    margin: right 40px;
 }
