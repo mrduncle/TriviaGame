@@ -132,7 +132,7 @@ function convertSpecial(qnText){
         .replace(/&gt;/g, ">")
         .replace(/&lt;/g, "<")
         .replace(/&quot;/g, '"')
-        .replace(/&quote/g, '"')
+        .replace(/&quote;/g, '"')
         .replace(/&#039;/g, "'")
         .replace(/&deg;/g, "deg")
         .replace(/&ndash;/g, "-")
