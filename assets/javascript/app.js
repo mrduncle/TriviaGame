@@ -81,7 +81,7 @@ $(".btn").on("click", function() {
         $("#quit").css("display", "none");
         location.reload(true); //reload the window from the server
     }
-    else if ((this).attr("class").includes("quit")) {  //if the user opted to quit the game
+    else if ($(this).attr("id") === "quit") {  //if the user opted to quit the game
         window.close();
     }
 })
