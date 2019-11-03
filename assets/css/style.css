@@ -25,9 +25,13 @@ h1 {
 }
 
 
-#countdown, #question, #start, #again, #quit, .answer 
-    #response-correect, #response-incorrect, #response-timeout {
+#countdown, #question, #start, #again, #quit, .answer, 
+    #response-correct, #response-incorrect, #response-timeout {
     font-size: 30px;
+}
+
+#resonse-incorrect {
+    white-space: pre-line;
 }
 
 #countdown {

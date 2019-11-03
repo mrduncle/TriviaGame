@@ -21,52 +21,58 @@ function randomNum() {
     return randNo;
 }
 
-function displayTime(element, delay) {
+function displayTime(element, delay, answerButton) {
     $(element).css("display", "block")
     setTimeout(function() {
         $(element).css("display", "none");
     }, delay);
+    //reinstate the functioanlity of the previously disabled answer button
+    //$("#answer" + answerButton).removeClass("disabled")
+    $("body").css("pointer-events", "auto");
 }
 
 function assessAnswer(usrResponse) {
     $("#question").css("display", "none");
+    let answerButton;
         for (let i=0; i<4; i++) {
             if ($("#answer" + i).text() !== usrResponse) { //hide all buttons
                 $("#answer" + i).css("display", "none")    //except the one
-                                                           //nominated by the user
+            }                                              //nominated by the user  
+            else {
+                $("body").css("pointer-events", "none");
+                //$("#answer" + i).addClass("disabled"); //disable the answer button temporarily                                                              //so that it can't be clicked while the 
+                answerButton = i;                      //answer response is being displayed
             }
         }
         usrResponse = usrResponse.trim();
         clearInterval(timerDisplay);
         if (usrResponse === arrData[1]) {
             correctAnswers++;
-            // scoreAnnounce = "Your score for this game is " + correctAnswers + "/" + questionsAsked + ".";
             $("#response-correct").text("Correct!\r\n");
-            displayTime("#response-correct", 5000);
+            displayTime("#response-correct", 3000, answerButton);
         }
         else {
             incorrectAnswers++;
             $("#response-incorrect").text("Incorrect!\r\n\r\nThe correct answer was " + arrData[1] + ".\r\n" + scoreAnnounce + "\r\n\r\n");//display message showing the correct answer
-            displayTime("#response-incorrect", 5000);
+            displayTime("#response-incorrect", 3000, answerButton);
         }
         setTimeout(function() {
-            nextQuestion();
-        }, 5000);
+            nextQuestion(answerButton);
+        }, 3000);
 
 }
 
 $(".btn").on("click", function() {
-    console.log($(this).attr("class"));
-    if ($(this).attr("id") === "start") {  //hide the start button 
-        $(this).css("display", "none");    
+    console.log($(this).attr("class"));    
+    if ($(this).attr("id") === "start") {  //if the start button was clicked 
+        $(this).css("display", "none");    //hide the start button
         getQuestionData(0);                //initiate the program
     }
-    
-    else if ($(this).attr("class").includes("answer")) {
+    else if ($(this).attr("class").includes("answer")) {  //if an answer button was clicked
         let userAnswer = $(this).text();
         assessAnswer(userAnswer);
     }
-    else if ($(this).attr("id") === "again") {
+    else if ($(this).attr("id") === "again") {  //if the user opted to replay the game again
         questionsAsked = 0;
         correctAnswers = 0;
         incorrectAnswers = 0;
@@ -75,37 +81,18 @@ $(".btn").on("click", function() {
         $("#quit").css("display", "none");
         location.reload(true); //reload the window from the server
     }
-    else {
+    else if ((this).attr("class").includes("quit")) {  //if the user opted to quit the game
         window.close();
     }
 })
-function startFinish() {
 
-
-    //ask the user if they want to play again
-    
-}
-// function answerCorrect() {
-//     let userAnswer = $(this).attr("value");
-//     if  (!userAnswer.trim().localCompare(arrData[1].trim())) {
-//         $("#response-correct").text("Correct! Your score for this game is " + correctAnswers + "/" + questionsAsked + "." );
-//         displayTime("#response-correct", 5000);
-
-//     }
-//     else {
-//         $("#response-incorrect").text("Incorrect! You score for this game is " + correctAnswers + "/" + questionsAsked + ".");//display message showing the correct answer
-//         displayTime("#response-incorrect", 5000);
-//     }
-// }
-function nextQuestion() {
-    if (questionsAsked < 5) {
-        // $(":input[type='radio']").each(function(){
-        //     $(this).attr("checked", false);
-        // })
-
+function nextQuestion(buttonHide) {
+    if (questionsAsked < numQuestions) {  //game continues with the next question
         getQuestionData(questionsAsked);
     }
-    else {
+    else {  //when the game has ended
+        $("#answer" + buttonHide).css("display", "none");
+        $("#countdown").css("display", "none");
         let unAnswered = questionsAsked - (correctAnswers + incorrectAnswers);
         let resultText = "Correct Answers: " + correctAnswers + 
             "\r\nIncorrect Answers: " + incorrectAnswers + 
@@ -117,34 +104,6 @@ function nextQuestion() {
         $("#quit").css("display", "block");
     }
 }
-
-// $("document").on("click", "#submit-answer", answerCorrect);
-// $("input[type='radio']").change(function() {
-//     let userAnswer = $(this).attr("value").trim();
-//     $("#question").css("display", "none");
-//     // $("#answers").children.css("display","none");
-//     // $("#answers").css("display", "none");
-//     $(".answer").css("display", "none");
-//     // $(".answer-radio").remove();
-//     // $(".label-radio").remove();
-//     clearInterval(timerDisplay);
-//     if  (userAnswer === arrData[1]) {
-//         //display message for correct answer
-//         correctAnswers++;
-//         scoreAnnounce = "Your score for this game is " + correctAnswers + "/" + questionsAsked + ".";
-//         $("#response-correct").text("Correct!\r\n" + scoreAnnounce + "\r\n\r\n");
-//         displayTime("#response-correct", 5000);
-//     }
-//     else {
-//         $("#response-incorrect").text("Incorrect!\r\n\r\nThe correct answer was " + arrData[1] + ".\r\n" + scoreAnnounce + "\r\n\r\n");//display message showing the correct answer
-//         displayTime("#response-incorrect", 5000);
-//     }
-//     console.log(this);
-//     $(":input[type='radio']").prop("checked", false);
-//     setTimeout(function() {
-//         nextQuestion();
-//     }, 5000);
-// })
 
 // display seconds remaining -works
 function displayCount(qaData) {
@@ -220,7 +179,6 @@ function getQuestionData(j) {
     //assign all of the required attributes to arrData[] 
     $.each(attList, function(i, attbt) { 
         arrData[i] = questionData[attbt];
-        // console.log(arrData[i]);
     })
     arrData[3] = arrData[2].slice(0); //make a copy of arrData[2] (incorrect_answers)
     let randInsert = randomNum();  
@@ -231,7 +189,6 @@ function getQuestionData(j) {
             arrData[3].push("");
         }
     }
-    // console.log(arrData);
     showQandA(arrData);
 }
 
@@ -245,7 +202,6 @@ $.ajax({
 }).then(function(response){
     ajaxResponse = response;
     startGame();
-    // getQuestionData(0);
 })
 
  
