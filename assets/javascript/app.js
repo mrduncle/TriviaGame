@@ -26,10 +26,6 @@ function displayTime(element, delay) {
     setTimeout(function() {
         $(element).css("display", "none");
     }, delay);
-    
-    if (questionsAsked < 5) {
-
-    }
 }
 
 function assessAnswer(usrResponse) {
@@ -57,8 +53,9 @@ function assessAnswer(usrResponse) {
 
 }
 
-$(":button").on("click", function() {
-    if ($(this).attr("class") === "answer") {
+$(".btn").on("click", function() {
+    console.log($(this).attr("class"));
+    if ($(this).attr("class").includes("answer")) {
         let userAnswer = $(this).text();
         assessAnswer(userAnswer)
     }
@@ -137,7 +134,7 @@ function nextQuestion() {
 function displayCount(qaData) {
     // call setInterval for the purpose of showing a countdown on screen -works
     timerDisplay = setInterval(function() {
-        $("#countdown").text(timer + "s");
+        $("#countdown").text("Time remaining: " + timer + "s");
         console.log(timer);
         if (timer === 0) {
             clearInterval(timerDisplay);
@@ -169,6 +166,7 @@ function convertSpecial(qnText){
         .replace(/&iacute;/g, "i")
         .replace(/&uuml;/g, "u")
         .replace(/&ouml;/g, "o")
+        .replace(/&rsquo;/g, "'")
         .replace(/&ldquo;/g, '"')
         .replace(/&rdquo;/g, '"');
 }

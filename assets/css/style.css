@@ -1,10 +1,37 @@
 body {
-    position: relative;
+    text-align: center;
+    /* position: relative; */
+    background-image: url("../images/boardgame.jpg");
+    height: 100vh;
 }
 
+
+
 .body-cont {
-    /* background-image: url("../images/boardgame.jpg"); */
-    /* opacity: 0.3; */
+    
+}
+
+#content-cont {
+    height: 90vh;
+    /* width: 80vw;
+    margin: 40px 0px;
+    background-color: greenyellow; */
+}
+
+h1 {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 100px;
+}
+
+
+#countdown, #question {
+    font-size: 30px;
+}
+#button-cont {
+    display: flex !important;
+    flex-direction: column !important;
+    align-content: center !important;
+
 }
 
 #answers {
@@ -13,26 +40,29 @@ body {
     left: 0px;
     /* color: black; */
     /* opacity: 1; */
+    
 }
 
-.label-radio {
-    margin-left: 20px;
-}
-
-#response-correct, #response-incorrect, #resonse-timeout {
+#response-correct, #response-incorrect, #response-timeout {
     white-space: pre-line;
 }
 
 .answer {
-    width: 200px;
-    height: 50px;
-    float: none;
-    margin-top: 20px;
+    /* float: none; */
+    /* display: flex; */
+    /* margin: auto; */
+    /* display: block; */
+    /* width: 500px; */
+    /* justify-content: center; */
 }
 
 
 button {
+    font-size: 20px;
+    width: 300px;
+    height: 50px;
+    margin: 10px;
     display: none;
     float: left;
-    margin-right: 40px;
+    /* margin-right: 40px; */
 }
