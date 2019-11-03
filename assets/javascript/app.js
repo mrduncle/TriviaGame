@@ -31,19 +31,21 @@ function displayTime(element, delay) {
 function assessAnswer(usrResponse) {
     $("#question").css("display", "none");
         for (let i=0; i<4; i++) {
-            if ($("#answer" + i).text() !== usrResponse) {
-                $("#answer" + i).css("display", "none")
+            if ($("#answer" + i).text() !== usrResponse) { //hide all buttons
+                $("#answer" + i).css("display", "none")    //except the one
+                                                           //nominated by the user
             }
         }
         usrResponse = usrResponse.trim();
         clearInterval(timerDisplay);
         if (usrResponse === arrData[1]) {
             correctAnswers++;
-            scoreAnnounce = "Your score for this game is " + correctAnswers + "/" + questionsAsked + ".";
-            $("#response-correct").text("Correct!\r\n" + scoreAnnounce + "\r\n\r\n");
+            // scoreAnnounce = "Your score for this game is " + correctAnswers + "/" + questionsAsked + ".";
+            $("#response-correct").text("Correct!\r\n");
             displayTime("#response-correct", 5000);
         }
         else {
+            incorrectAnswers++;
             $("#response-incorrect").text("Incorrect!\r\n\r\nThe correct answer was " + arrData[1] + ".\r\n" + scoreAnnounce + "\r\n\r\n");//display message showing the correct answer
             displayTime("#response-incorrect", 5000);
         }
@@ -55,13 +57,20 @@ function assessAnswer(usrResponse) {
 
 $(".btn").on("click", function() {
     console.log($(this).attr("class"));
-    if ($(this).attr("class").includes("answer")) {
+    if ($(this).attr("id") === "start") {  //hide the start button 
+        $(this).css("display", "none");    
+        getQuestionData(0);                //initiate the program
+    }
+    
+    else if ($(this).attr("class").includes("answer")) {
         let userAnswer = $(this).text();
-        assessAnswer(userAnswer)
+        assessAnswer(userAnswer);
     }
     else if ($(this).attr("id") === "again") {
         questionsAsked = 0;
         correctAnswers = 0;
+        incorrectAnswers = 0;
+        $("#results").css("display", "none");
         $("#again").css("display", "none"); //hide the buttons
         $("#quit").css("display", "none");
         location.reload(true); //reload the window from the server
@@ -97,6 +106,13 @@ function nextQuestion() {
         getQuestionData(questionsAsked);
     }
     else {
+        let unAnswered = questionsAsked - (correctAnswers + incorrectAnswers);
+        let resultText = "Correct Answers: " + correctAnswers + 
+            "\r\nIncorrect Answers: " + incorrectAnswers + 
+            "\r\nUnanswered: " + unAnswered;
+        console.log(resultText);
+        $("#result").text(resultText);
+        $("#result").css("display", "block");
         $("#again").css("display", "block");
         $("#quit").css("display", "block");
     }
@@ -175,21 +191,17 @@ function convertSpecial(qnText){
 function showQandA(qaData) {
     let cleanQuestion = convertSpecial(qaData[0]);
     $("#question").text(cleanQuestion);
-    $("#question").css("display", "block");
+    $("#question").css("display", "block");   //display the question
+    $("#countdown").css("display", "block");  //display the countdown timer
     for (let i=0; i<qaData[3].length; i++) {
     // $.each(qaData[3], function(i, anAnswer){ 
         let cleanAnswer = convertSpecial(qaData[3][i]);
         // console.log(cleanAnswer)
-        if (cleanAnswer !== "") {  //if an answer exists, display the radio button and label
-            // $("#answers").append("<input type='radio' id='answer'" + i + " name='radbtn' checked= false class='answer-radio'>");
-            // $("#answers").append("<label for='answer'" + i + " id='label'" + i + " class='label-radio'></label><br><br>")
-            // $("#answer" + i).prop("checked", false);
-            // $("#label" + i).text(cleanAnswer);
-            // $("#answer" + i).attr("value", cleanAnswer);
+        if (cleanAnswer !== "") {  //if an answer exists, display the buttons containing the answers
             $("#answer" + i).text(cleanAnswer);
-            $("#answer" + i).css("display", "block")
+            $("#answer" + i).css("display", "block")  //display each answer if it is not empty
         }
-        else { //if an answer doesn't exist hide the radio button and label
+        else { //if an answer doesn't exist hide the button containing no information pertinent to the question
             $("#answer" + i).css("display", "none");
         }
     }
@@ -200,7 +212,8 @@ function showQandA(qaData) {
 function getQuestionData(j) {
     console.log(ajaxResponse);
     console.log(questionsAsked);
-    let questionData = ajaxResponse.results[j]; //change back to j
+    
+    let questionData = ajaxResponse.results[j];
     questionsAsked++;
     let attList = ["question", "correct_answer", "incorrect_answers"];
     arrData = [];
@@ -222,12 +235,17 @@ function getQuestionData(j) {
     showQandA(arrData);
 }
 
+function startGame() {
+    $("#start").css("display", "block");
+}
+
 $.ajax({
     url: queryURL,
     method: "GET"
 }).then(function(response){
     ajaxResponse = response;
-    getQuestionData(0);
+    startGame();
+    // getQuestionData(0);
 })
 
  

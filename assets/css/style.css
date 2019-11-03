@@ -12,7 +12,8 @@ body {
 }
 
 #content-cont {
-    height: 90vh;
+    height: 90vh; /*this setting is critical to have some space above and 
+                  below this container*/
     /* width: 80vw;
     margin: 40px 0px;
     background-color: greenyellow; */
@@ -24,45 +25,34 @@ h1 {
 }
 
 
-#countdown, #question {
+#countdown, #question, #start, #again, #quit, .answer 
+    #response-correect, #response-incorrect, #response-timeout {
     font-size: 30px;
 }
+
+#countdown {
+    display: none;
+}
+
+#result {
+    font-size: 20px;
+    white-space: pre-line;
+}
+
 #button-cont {
     display: flex !important;
     flex-direction: column !important;
     align-content: center !important;
-
 }
 
-#answers {
-    position: relative;
-    /* top:200px; */
-    left: 0px;
-    /* color: black; */
-    /* opacity: 1; */
-    
-}
-
-#response-correct, #response-incorrect, #response-timeout {
-    white-space: pre-line;
-}
-
-.answer {
-    /* float: none; */
-    /* display: flex; */
-    /* margin: auto; */
-    /* display: block; */
-    /* width: 500px; */
-    /* justify-content: center; */
-}
-
-
-button {
-    font-size: 20px;
-    width: 300px;
-    height: 50px;
+.btn {
+    /* font-size: 20px; */
     margin: 10px;
-    display: none;
-    float: left;
+    display: none; /*all buttons with the exception of start*/
+                   /*are hidden at the start of the game*/
     /* margin-right: 40px; */
+}
+
+#result {
+    display: none;
 }
