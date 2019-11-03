@@ -14,26 +14,31 @@
 				<h1>Totally Trivial Trivia!</h1>
 			</header>
 			<div id="countdown">30s</div>
-			<div class="win-loss">
-                <p id="winner">Wins: </p>
-                <p id="loser">Losses: </p>
-			</div>
 			<div id="response-correct"></div>
 			<div id="response-incorrect"></div>
 			<div id="response-timeout"></div>
 			<div id="question"></div><br>
-			<form id="answers">
-				<input type="radio" id="answer0" name="answer0" value=""></input>
-				<label for="answer0" id="label0"></label><br><br>
-				<input type="radio" id="answer1" name="answer1" value=""></input>
-				<label for="answer1" id="label1"></label><br><br>
-				<input type="radio" id="answer2" name="answer2" value=""></input>
-				<label for="answer2" id="label2"></label><br><br>
-				<input type="radio" id="answer3" name="answer3" value=""></input>
-				<label for="answer3" id="label3"></label><br><br>
+			<!-- <form id="answers"> -->
+			<button class="answer" id="answer0"></button>
+			<button class="answer" id="answer1"></button>
+			<button class="answer" id="answer2"></button>
+			<button class="answer" id="answer3"></button>
+				<!-- <input type="radio" id="answer0" name="radbtn" checked=false class="answer-radio answer" value=""></input> -->
+				<!-- <label for="answer0" id="label0" class="label-radio"></label><br><br> -->
+				<!-- <label for="answer0" id="answer0" class="answer-label answer"></label><br><br>
+				<input type="radio" id="answer1" name="radbtn" checked=false class="answer-radio answer" value=""></input> -->
+				<!-- <label for="answer1" id="label1" class="label-radio"></label><br><br> -->
+				<!-- <label for="answer1" id="answer1" class="answer-label answer"></label><br><br>
+				<input type="radio" id="answer2" name="radbtn" checked=false class="answer-radio answer" value=""></input> -->
+				<!-- <label for="answer2" id="label2" class="label-radio"></label><br><br> -->
+				<!-- <label for="answer2" id="answer2" class="answer-label answer"></label><br><br>
+				<input type="radio" id="answer3" name="radbtn" checked=false class="answer-radio answer" value=""></input> -->
+				<!-- <label for="answer3" id="label3" class="label-radio"></label><br><br> -->
+				<!-- <label for="answer3" id="answer3" class="answer-label answer"></label><br><br> -->
 				<!-- <input type="submit" id="submit-answer" value="Submit"> -->
-			</form>
+			<!-- </form> -->
 			<div id="result"></div>
+			<button id="start">Start</button>
 			<button id="again">Play Again</button>
 			<button id="quit">Quit Game</button>
 			

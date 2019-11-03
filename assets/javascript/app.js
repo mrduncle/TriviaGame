@@ -22,13 +22,63 @@ function randomNum() {
 }
 
 function displayTime(element, delay) {
-    setTimeout(function() { $(element).css("display", "block") }, delay);
-    $(element).css("display", "none");
+    $(element).css("display", "block")
+    setTimeout(function() {
+        $(element).css("display", "none");
+    }, delay);
+    
     if (questionsAsked < 5) {
 
     }
 }
 
+function assessAnswer(usrResponse) {
+    $("#question").css("display", "none");
+        for (let i=0; i<4; i++) {
+            if ($("#answer" + i).text() !== usrResponse) {
+                $("#answer" + i).css("display", "none")
+            }
+        }
+        usrResponse = usrResponse.trim();
+        clearInterval(timerDisplay);
+        if (usrResponse === arrData[1]) {
+            correctAnswers++;
+            scoreAnnounce = "Your score for this game is " + correctAnswers + "/" + questionsAsked + ".";
+            $("#response-correct").text("Correct!\r\n" + scoreAnnounce + "\r\n\r\n");
+            displayTime("#response-correct", 5000);
+        }
+        else {
+            $("#response-incorrect").text("Incorrect!\r\n\r\nThe correct answer was " + arrData[1] + ".\r\n" + scoreAnnounce + "\r\n\r\n");//display message showing the correct answer
+            displayTime("#response-incorrect", 5000);
+        }
+        setTimeout(function() {
+            nextQuestion();
+        }, 5000);
+
+}
+
+$(":button").on("click", function() {
+    if ($(this).attr("class") === "answer") {
+        let userAnswer = $(this).text();
+        assessAnswer(userAnswer)
+    }
+    else if ($(this).attr("id") === "again") {
+        questionsAsked = 0;
+        correctAnswers = 0;
+        $("#again").css("display", "none"); //hide the buttons
+        $("#quit").css("display", "none");
+        location.reload(true); //reload the window from the server
+    }
+    else {
+        window.close();
+    }
+})
+function startFinish() {
+
+
+    //ask the user if they want to play again
+    
+}
 // function answerCorrect() {
 //     let userAnswer = $(this).attr("value");
 //     if  (!userAnswer.trim().localCompare(arrData[1].trim())) {
@@ -41,23 +91,47 @@ function displayTime(element, delay) {
 //         displayTime("#response-incorrect", 5000);
 //     }
 // }
+function nextQuestion() {
+    if (questionsAsked < 5) {
+        // $(":input[type='radio']").each(function(){
+        //     $(this).attr("checked", false);
+        // })
 
-
-// $("document").on("click", "#submit-answer", answerCorrect);
-$("input[type='radio']").change(function() {
-    let userAnswer = $(this).attr("value").trim();
-    clearInterval(timerDisplay);
-    if  (userAnswer === arrData[1]) {
-        //display message for correct answer
-        correctAnswers++;
-        $("#response-correct").text("Correct!\r\n" + scoreAnnounce);
-        displayTime("#response-correct", 5000);
+        getQuestionData(questionsAsked);
     }
     else {
-        $("#response-incorrect").text("Incorrect!\r\n\r\nThe correct answer was " + arrData[1] + ".\r\nYour score for this game is " + correctAnswers + "/" + questionsAsked + ".\r\n\r\n");//display message showing the correct answer
-        displayTime("#response-incorrect", 5000);
+        $("#again").css("display", "block");
+        $("#quit").css("display", "block");
     }
-})
+}
+
+// $("document").on("click", "#submit-answer", answerCorrect);
+// $("input[type='radio']").change(function() {
+//     let userAnswer = $(this).attr("value").trim();
+//     $("#question").css("display", "none");
+//     // $("#answers").children.css("display","none");
+//     // $("#answers").css("display", "none");
+//     $(".answer").css("display", "none");
+//     // $(".answer-radio").remove();
+//     // $(".label-radio").remove();
+//     clearInterval(timerDisplay);
+//     if  (userAnswer === arrData[1]) {
+//         //display message for correct answer
+//         correctAnswers++;
+//         scoreAnnounce = "Your score for this game is " + correctAnswers + "/" + questionsAsked + ".";
+//         $("#response-correct").text("Correct!\r\n" + scoreAnnounce + "\r\n\r\n");
+//         displayTime("#response-correct", 5000);
+//     }
+//     else {
+//         $("#response-incorrect").text("Incorrect!\r\n\r\nThe correct answer was " + arrData[1] + ".\r\n" + scoreAnnounce + "\r\n\r\n");//display message showing the correct answer
+//         displayTime("#response-incorrect", 5000);
+//     }
+//     console.log(this);
+//     $(":input[type='radio']").prop("checked", false);
+//     setTimeout(function() {
+//         nextQuestion();
+//     }, 5000);
+// })
 
 // display seconds remaining -works
 function displayCount(qaData) {
@@ -67,8 +141,9 @@ function displayCount(qaData) {
         console.log(timer);
         if (timer === 0) {
             clearInterval(timerDisplay);
-            $("#response-timeout").text("Time is up!!\r\n\r\n The correct answer was " + qaData[1] + ".\r\nYour score for this game is " + correctAnswers + "/" + questionsAsked + ".\r\n\r\n");
+            $("#response-timeout").text("Time is up!!\r\n\r\n The correct answer was " + convertSpecial(qaData[1]) + ".\r\nYour score for this game is " + correctAnswers + "/" + questionsAsked + ".\r\n\r\n");
             displayTime("#response-timeout", 5000);
+            nextQuestion();
         }
         else {
             timer--;
@@ -85,10 +160,15 @@ function convertSpecial(qnText){
         .replace(/&gt;/g, ">")
         .replace(/&lt;/g, "<")
         .replace(/&quot;/g, '"')
+        .replace(/&quote/g, '"')
         .replace(/&#039;/g, "'")
         .replace(/&deg;/g, "deg")
         .replace(/&ndash;/g, "-")
-        .replace(/&eacute;/g, "")
+        .replace(/&divide;/g, "/")
+        .replace(/&eacute;/g, "e")
+        .replace(/&iacute;/g, "i")
+        .replace(/&uuml;/g, "u")
+        .replace(/&ouml;/g, "o")
         .replace(/&ldquo;/g, '"')
         .replace(/&rdquo;/g, '"');
 }
@@ -97,26 +177,32 @@ function convertSpecial(qnText){
 function showQandA(qaData) {
     let cleanQuestion = convertSpecial(qaData[0]);
     $("#question").text(cleanQuestion);
-    $.each(qaData[3], function(i, anAnswer){ 
-        let cleanAnswer = convertSpecial(" " + anAnswer);
+    $("#question").css("display", "block");
+    for (let i=0; i<qaData[3].length; i++) {
+    // $.each(qaData[3], function(i, anAnswer){ 
+        let cleanAnswer = convertSpecial(qaData[3][i]);
         // console.log(cleanAnswer)
         if (cleanAnswer !== "") {  //if an answer exists, display the radio button and label
-            $("#answer" + i).css("display", "block");
-            $("#answer" + i).attr("value", cleanAnswer);
+            // $("#answers").append("<input type='radio' id='answer'" + i + " name='radbtn' checked= false class='answer-radio'>");
+            // $("#answers").append("<label for='answer'" + i + " id='label'" + i + " class='label-radio'></label><br><br>")
+            // $("#answer" + i).prop("checked", false);
+            // $("#label" + i).text(cleanAnswer);
+            // $("#answer" + i).attr("value", cleanAnswer);
             $("#answer" + i).text(cleanAnswer);
-            $("#label" + i).text(cleanAnswer);
+            $("#answer" + i).css("display", "block")
         }
         else { //if an answer doesn't exist hide the radio button and label
             $("#answer" + i).css("display", "none");
         }
-    })
+    }
+    // $("#answers").css("display", "block");
     displayCount(qaData);
 }
 
-function getQuestionData(response, j) {
-    console.log(response);
+function getQuestionData(j) {
+    console.log(ajaxResponse);
     console.log(questionsAsked);
-    let questionData = response.results[j]; //change back to j
+    let questionData = ajaxResponse.results[j]; //change back to j
     questionsAsked++;
     let attList = ["question", "correct_answer", "incorrect_answers"];
     arrData = [];
@@ -128,32 +214,22 @@ function getQuestionData(response, j) {
     arrData[3] = arrData[2].slice(0); //make a copy of arrData[2] (incorrect_answers)
     let randInsert = randomNum();  
     arrData[3].splice(randInsert, 0, (arrData[1].trim())); //add the correct answer to incorrect_answers
-                                                            // in a random location (0 to 3) to get all answers
-    // console.log(arrData);
-    return arrData
-}
-
-function trafficCtrl(response){
-    arrData = getQuestionData(response, 0);
-    showQandA(arrData);
-    if (questionsAsked === 5) {
-        correctAnswers = 0;
-        questionsAsked = 0;
+                                                           //in a random location (0 to 3) to get all answers
+    if (arrData[3].length < 4) {
+        for (j=arrData[3].length; j=3; j++) {
+            arrData[3].push("");
+        }
     }
-
-    //ask the user if they want to play again
-    $("#again").css("display", "block");
-    $("#quit").css("display", "block");
+    // console.log(arrData);
+    showQandA(arrData);
 }
-
-scoreAnnounce = "Your score for this game is " + correctAnswers + "/" + questionsAsked + ".";
 
 $.ajax({
     url: queryURL,
     method: "GET"
 }).then(function(response){
-    let ajaxResponse = response
-    trafficCtrl(ajaxResponse);    
+    ajaxResponse = response;
+    getQuestionData(0);
 })
 
  
