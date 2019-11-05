@@ -1,0 +1,20 @@
+body {
+    position: relative;
+}
+
+.body-cont {
+    /* background-image: url("../images/boardgame.jpg"); */
+    /* opacity: 0.3; */
+}
+
+#questions {
+    position: absolute;
+    top: 140px;
+    left: 0px;
+    /* color: black; */
+    /* opacity: 1; */
+}
+
+#response-correct, #response-incorrect {
+    white-space: pre-line;
+}

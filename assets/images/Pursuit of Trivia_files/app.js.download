@@ -1,0 +1,134 @@
+//@ts-check
+
+let timer = 29;
+let timerDisplay;
+let arrData = [];
+let numQuestions = 5;
+let questionsAsked = 0;
+let correctAnswers = 0;
+let incorrectAnswers = 0;
+
+let queryURL = "https://opentdb.com/api.php?amount=" + numQuestions;
+
+function randomNum() {
+    //find a random number between 0 and 3 which determines the position
+    //that the correct answer will be inserted into the incorrect answers
+    //array to yield an all answers array
+    let randNo = Math.floor(Math.random() * (4));
+    return randNo;
+}
+
+function convertSpecial(qnText){
+    qnText = qnText.replace(/&/g, "&amp;");
+    qnText = qnText.replace(/>/g, "&gt;");
+    qnText = qnText.replace(/</g, "&lt;");
+    qnText = qnText.replace(/"/g, "&quot;");
+    qnText = qnText.replace(/'/g, "&#039;");
+    return qnText;
+}
+
+
+function displayTime(element, delay) {
+    setTimeout(function() { $(element).css("display", "block") }, delay);
+    $(element).css("display", "none");
+}
+//ensures that there are no repeats in the random order array randOrder
+// function randomQuestOrder(randOrder,index) {
+//     let orderVal = randomNum();
+//     while (randOrder.includes(orderVal)) {
+//         orderVal = randomNum();
+//     }
+//     randOrder[index] = orderVal;
+//     console.log(randOrder)
+//     return randOrder;
+// }
+
+//displays the question and then the answers in a random order
+function showQandA(qaData) {
+    let cleanQuestion = convertSpecial(qaData[0]);
+    $("#question").text(cleanQuestion);
+    $.each(qaData[3], function(i, anAnswer){
+        let cleanAnswer = convertSpecial(" " + anAnswer);
+        $("#answer" + i).attr("value", cleanAnswer);
+        // $("#answer" + i).text(cleanAnswer);
+        $("#label" + i).text(cleanAnswer);
+
+    })
+    // $.each(randOrder, function(index, value) {
+    //     randomQuestOrder(randOrder, index);
+    // })
+    // console.log(randOrder);
+}
+
+function getQuestionData(response) {
+    questionsAsked++;
+    let questionData = response.results[0]; //change back to j
+    let attList = ["question", "correct_answer", "incorrect_answers"];
+    arrData = [];
+    //change this loop to just the number of questions the user wants to answer 
+    $.each(attList, function(i, attbt) { 
+        arrData[i] = questionData[attbt];
+    })
+    arrData[3] = arrData[2].slice(0); //make a copy of arrData[2] (incorrect_answers)
+    let randInsert = randomNum();  
+    arrData[3].splice(randInsert, 0, (arrData[1].trim())); //add the correct answer to incorrect_answers
+                                                            // in a random location (0 to 3) to get all answers
+    console.log(arrData);
+    showQandA(arrData);
+}
+
+function answerCorrect() {
+    let userAnswer = $(this).attr("value");
+    if  (!userAnswer.trim().localCompare(arrData[1].trim())) {
+        correctAnswers++;
+        $("#response-correct").text("Correct! Your score for this game is " + correctAnswers + "/" + questionsAsked + "." );
+        displayTime("#response-correct", 5000);
+
+    }
+    else {
+        $("#response-incorrect").text("Incorrect! You score for this game is " + correctAnswers + "/" + questionsAsked + ".");//display message showing the correct answer
+        incorrectAnswers++;
+        displayTime("#response-incorrect", 5000);
+    }
+}
+
+
+// $("document").on("click", "#submit-answer", answerCorrect);
+$("input[type='radio']").change(function() {
+    let userAnswer = $(this).attr("value").trim();
+    if  (userAnswer == arrData[1]) {
+        $("#response-correct").text("Correct!\r\nYour score for this game is " + correctAnswers + "/" + questionsAsked + "." );
+        //display message for correct answer
+        correctAnswers++;
+        displayTime("#response-correct", 5000);
+
+    }
+    else {
+        $("#response-incorrect").text("Incorrect!\r\n\r\nThe correct answer was " + arrData[1] + ".\r\nYour score for this game is " + correctAnswers + "/" + questionsAsked + ".\r\n\r\n");//display message showing the correct answer
+        incorrectAnswers++;
+        displayTime("#response-incorrect", 5000);
+    }
+})
+
+//display seconds remaining -works
+// function displayCount() {
+//     $("#countdown").text(timer + "s");
+//     console.log(timer);
+//     if (timer === 0) {
+//         clearInterval(timerDisplay);
+//         timer = 29;
+//     }
+//     timer--;
+// }
+
+
+
+$.ajax({
+    url: queryURL,
+    method: "GET"
+}).then(function(response){
+    getQuestionData(response);    
+})
+
+//call setInterval for the purpose of showing a countdown on screen -works
+// timerDisplay = setInterval(displayCount, 1000); 
