@@ -139,9 +139,11 @@ function convertSpecial(qnText){
         .replace(/&divide;/g, "/")
         .replace(/&eacute;/g, "e")
         .replace(/&iacute;/g, "i")
+        .replace(/&egrave;/g, "e")
         .replace(/&uuml;/g, "u")
         .replace(/&ouml;/g, "o")
         .replace(/&rsquo;/g, "'")
+        .replace(/&lsquo/g, "'")
         .replace(/&ldquo;/g, '"')
         .replace(/&rdquo;/g, '"');
 }
@@ -185,7 +187,7 @@ function getQuestionData(j) {
     arrData[3].splice(randInsert, 0, (arrData[1].trim())); //add the correct answer to incorrect_answers
                                                            //in a random location (0 to 3) to get all answers
     if (arrData[3].length < 4) {
-        for (j=arrData[3].length; j=3; j++) {
+        for (j=arrData[3].length; j<4; j++) {
             arrData[3].push("");
         }
     }
