@@ -186,7 +186,8 @@ function getQuestionData(j) {
     let randInsert = randomNum();  
     arrData[3].splice(randInsert, 0, (arrData[1].trim())); //add the correct answer to incorrect_answers
                                                            //in a random location (0 to 3) to get all answers
-    if (arrData[3].length < 4) {
+    if (arrData[3].length < 4) {  //for questions with less than 4 answers, set those answers to "" in 
+                                  //preparation for hiding the buttons associated with those answers
         for (j=arrData[3].length; j<4; j++) {
             arrData[3].push("");
         }
