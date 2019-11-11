@@ -8,7 +8,6 @@ let numQuestions = 5;
 let questionsAsked = 0;
 let correctAnswers = 0;
 let incorrectAnswers = 0;
-let scoreAnnounce = '';
 
 let queryURL = "https://opentdb.com/api.php?amount=" + numQuestions;
 
@@ -39,7 +38,8 @@ function assessAnswer(usrResponse) {
                 $("#answer" + i).css("display", "none")    //except the one
             }                                              //nominated by the user  
             else {
-                $("body").css("pointer-events", "none");
+                $("#answer" + i).prop("disabled", true);
+                // $("body").css("pointer-events", "none");
                 //$("#answer" + i).addClass("disabled"); //disable the answer button temporarily                                                              //so that it can't be clicked while the 
                 answerButton = i;                      //answer response is being displayed
             }
@@ -53,7 +53,7 @@ function assessAnswer(usrResponse) {
         }
         else {
             incorrectAnswers++;
-            $("#response-incorrect").text("Incorrect!\r\n\r\nThe correct answer was " + arrData[1] + ".\r\n" + scoreAnnounce + "\r\n\r\n");//display message showing the correct answer
+            $("#response-incorrect").text("Incorrect!\r\n\r\nThe correct answer was " + arrData[1] + ".\r\n\r\n");//display message showing the correct answer
             displayTime("#response-incorrect", 3000, answerButton);
         }
         setTimeout(function() {
@@ -87,6 +87,7 @@ $(".btn").on("click", function() {
 })
 
 function nextQuestion(buttonHide) {
+    $("#answer" + buttonHide).prop("disabled", false);
     if (questionsAsked < numQuestions) {  //game continues with the next question
         getQuestionData(questionsAsked);
     }
@@ -137,6 +138,7 @@ function convertSpecial(qnText){
         .replace(/&deg;/g, "deg")
         .replace(/&ndash;/g, "-")
         .replace(/&divide;/g, "/")
+        .replace(/&Aacute;/g, "A")
         .replace(/&eacute;/g, "e")
         .replace(/&iacute;/g, "i")
         .replace(/&egrave;/g, "e")
